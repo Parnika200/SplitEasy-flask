@@ -1,0 +1,467 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+    .expenses-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .expenses-header h1 {
+        margin: 0 0 6px;
+        font-size: 28px;
+        color: #111827;
+    }
+
+    .expenses-header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .add-expense-btn {
+        background: #4f46e5;
+        color: white;
+        text-decoration: none;
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .add-expense-btn:hover {
+        background: #4338ca;
+    }
+
+    .filter-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .filter-title {
+        margin: 0 0 15px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #111827;
+    }
+
+    .filter-form {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .search-input,
+    .category-select {
+        padding: 11px 13px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        background: white;
+    }
+
+    .search-input {
+        flex: 1;
+    }
+
+    .search-input:focus,
+    .category-select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .filter-btn {
+        padding: 11px 18px;
+        border: none;
+        border-radius: 8px;
+        background: #111827;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .filter-btn:hover {
+        background: #1f2937;
+    }
+
+    .clear-filter {
+        display: inline-block;
+        margin-top: 12px;
+        color: #4f46e5;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .clear-filter:hover {
+        text-decoration: underline;
+    }
+
+    .expense-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .expense-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 20px 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .expense-main {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .expense-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 17px;
+    }
+
+    .expense-info h3 {
+        margin: 0 0 5px;
+        font-size: 16px;
+        color: #111827;
+    }
+
+    .expense-info p {
+        margin: 3px 0;
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+    .expense-category {
+        display: inline-block;
+        background: #f3f4f6;
+        color: #374151;
+        padding: 4px 9px;
+        border-radius: 6px;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .expense-right {
+        text-align: right;
+    }
+
+    .expense-amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 8px;
+    }
+
+    .expense-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+
+    .edit-link {
+        color: #4f46e5;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .delete-link {
+        color: #dc2626;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .edit-link:hover,
+    .delete-link:hover {
+        text-decoration: underline;
+    }
+
+    .total-card {
+        margin-top: 20px;
+        background: #111827;
+        color: white;
+        border-radius: 12px;
+        padding: 20px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-card span {
+        font-size: 14px;
+        color: #d1d5db;
+    }
+
+    .total-card strong {
+        font-size: 22px;
+    }
+
+    .empty-state {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+        color: #111827;
+    }
+
+    .empty-state p {
+        margin: 0 0 20px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+
+        .expenses-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .filter-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-input {
+            width: 100%;
+        }
+
+        .expense-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 18px;
+        }
+
+        .expense-right {
+            width: 100%;
+            text-align: left;
+        }
+
+        .expense-actions {
+            justify-content: flex-start;
+        }
+
+        .total-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+    }
+
+</style>
+
+
+<div class="expenses-header">
+
+    <div>
+        <h1>My Expenses</h1>
+
+        <p>
+            View and manage all your recorded expenses.
+        </p>
+    </div>
+
+    <a
+        href="{{ url_for('add_expense') }}"
+        class="add-expense-btn"
+    >
+        + Add Expense
+    </a>
+
+</div>
+
+
+<div class="filter-card">
+
+    <div class="filter-title">
+        Search & Filter
+    </div>
+
+    <form
+        method="GET"
+        class="filter-form"
+    >
+
+        <input
+            type="text"
+            name="search"
+            class="search-input"
+            placeholder="Search expense..."
+            value="{{ search }}"
+        >
+
+        <select
+            name="category_id"
+            class="category-select"
+        >
+
+            <option value="">
+                All Categories
+            </option>
+
+            {% for category in categories %}
+
+                <option
+                    value="{{ category.id }}"
+                    {% if category_id == category.id|string %}
+                        selected
+                    {% endif %}
+                >
+                    {{ category.name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button
+            type="submit"
+            class="filter-btn"
+        >
+            Filter
+        </button>
+
+    </form>
+
+    <a
+        href="{{ url_for('expenses') }}"
+        class="clear-filter"
+    >
+        Clear Filters
+    </a>
+
+</div>
+
+
+{% if expenses %}
+
+    <div class="expense-list">
+
+        {% for expense in expenses %}
+
+            <div class="expense-card">
+
+                <div class="expense-main">
+
+                    <div class="expense-icon">
+                        ₹
+                    </div>
+
+                    <div class="expense-info">
+
+                        <h3>
+                            {{ expense.description }}
+                        </h3>
+
+                        <p>
+                            {{ expense.date }}
+                        </p>
+
+                        <span class="expense-category">
+                            {{ expense.category.name }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="expense-right">
+
+                    <div class="expense-amount">
+                        ₹{{ expense.amount }}
+                    </div>
+
+                    <div class="expense-actions">
+
+                        <a
+                            href="{{ url_for('edit_expense', id=expense.id) }}"
+                            class="edit-link"
+                        >
+                            Edit
+                        </a>
+
+                        <a
+                            href="{{ url_for('delete_expense', id=expense.id) }}"
+                            class="delete-link"
+                        >
+                            Delete
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <div class="total-card">
+
+        <span>
+            Total Expenses
+        </span>
+
+        <strong>
+            ₹{{ total }}
+        </strong>
+
+    </div>
+
+
+{% else %}
+
+    <div class="empty-state">
+
+        <h3>
+            No expenses found
+        </h3>
+
+        <p>
+            Try changing your search or category filter.
+        </p>
+
+        <a
+            href="{{ url_for('add_expense') }}"
+            class="add-expense-btn"
+        >
+            Add Your First Expense
+        </a>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}

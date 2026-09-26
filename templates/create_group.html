@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+    .create-group-page {
+        min-height: 75vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px 0;
+    }
+
+    .group-form-card {
+        width: 100%;
+        max-width: 520px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 35px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-header {
+        margin-bottom: 28px;
+    }
+
+    .form-header h1 {
+        margin: 0 0 8px;
+        font-size: 26px;
+        color: #111827;
+    }
+
+    .form-header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 14px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #111827;
+        outline: none;
+    }
+
+    .form-group input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    .create-btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #4f46e5;
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .create-btn:hover {
+        background: #4338ca;
+    }
+
+    .cancel-btn {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: white;
+        color: #374151;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .cancel-btn:hover {
+        background: #f9fafb;
+    }
+
+</style>
+
+
+<div class="create-group-page">
+
+    <div class="group-form-card">
+
+        <div class="form-header">
+
+            <h1>Create Group</h1>
+
+            <p>
+                Create a group to manage shared expenses together.
+            </p>
+
+        </div>
+
+
+        <form method="POST">
+
+            <div class="form-group">
+
+                <label>
+                    Group Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="e.g. Goa Trip, Roommates, College Friends"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a
+                    href="{{ url_for('groups') }}"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="create-btn"
+                >
+                    Create Group
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

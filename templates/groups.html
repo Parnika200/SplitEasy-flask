@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+    .groups-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .groups-header h1 {
+        margin: 0 0 6px;
+        font-size: 28px;
+        color: #111827;
+    }
+
+    .groups-header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .create-group-btn {
+        background: #4f46e5;
+        color: white;
+        text-decoration: none;
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .create-group-btn:hover {
+        background: #4338ca;
+    }
+
+    .groups-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .group-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 22px;
+        transition: 0.2s;
+    }
+
+    .group-card:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    }
+
+    .group-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .group-card h3 {
+        margin: 0 0 8px;
+        font-size: 17px;
+        color: #111827;
+    }
+
+    .group-card a {
+        color: #111827;
+        text-decoration: none;
+    }
+
+    .group-card a:hover {
+        color: #4f46e5;
+    }
+
+    .view-group {
+        display: inline-block;
+        margin-top: 15px;
+        color: #4f46e5;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .view-group:hover {
+        text-decoration: underline;
+    }
+
+    .empty-state {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+        color: #111827;
+    }
+
+    .empty-state p {
+        margin: 0 0 20px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+
+        .groups-list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .groups-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .groups-list {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+
+<div class="groups-header">
+
+    <div>
+
+        <h1>My Groups</h1>
+
+        <p>
+            Manage your shared expenses and groups.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('create_group') }}"
+        class="create-group-btn"
+    >
+        + Create Group
+    </a>
+
+</div>
+
+
+{% if groups %}
+
+    <div class="groups-list">
+
+        {% for group in groups %}
+
+            <div class="group-card">
+
+                <div class="group-icon">
+                    G
+                </div>
+
+                <h3>
+                    <a
+                        href="{{ url_for('group_details', group_id=group.id) }}"
+                    >
+                        {{ group.name }}
+                    </a>
+                </h3>
+
+                <a
+                    href="{{ url_for('group_details', group_id=group.id) }}"
+                    class="view-group"
+                >
+                    View Group →
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% else %}
+
+    <div class="empty-state">
+
+        <h3>
+            No Groups Yet
+        </h3>
+
+        <p>
+            Create a group to start managing shared expenses.
+        </p>
+
+        <a
+            href="{{ url_for('create_group') }}"
+            class="create-group-btn"
+        >
+            Create Your First Group
+        </a>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}

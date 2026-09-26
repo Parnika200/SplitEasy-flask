@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+    .split-page {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .split-header {
+        margin-bottom: 25px;
+    }
+
+    .split-header h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        color: #111827;
+    }
+
+    .split-header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .expense-summary {
+        background: #111827;
+        color: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 22px;
+    }
+
+    .expense-summary h2 {
+        margin: 0 0 18px;
+        font-size: 20px;
+    }
+
+    .summary-details {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .summary-item span {
+        display: block;
+        color: #9ca3af;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .summary-item strong {
+        font-size: 17px;
+    }
+
+    .split-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .split-card-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .split-card-header h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #111827;
+    }
+
+    .split-list {
+        padding: 10px 22px;
+    }
+
+    .split-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .split-row:last-child {
+        border-bottom: none;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .user-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111827;
+    }
+
+    .user-amount {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .back-section {
+        margin-top: 22px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        background: white;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        text-decoration: none;
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .back-btn:hover {
+        background: #f9fafb;
+    }
+
+    .empty-state {
+        padding: 35px 20px;
+        text-align: center;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+
+        .summary-details {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .split-row {
+            gap: 15px;
+        }
+
+    }
+
+</style>
+
+<div class="split-page">
+
+    <div class="split-header">
+
+        <h1>Expense Split</h1>
+
+        <p>
+            View how this expense is divided among group members.
+        </p>
+
+    </div>
+
+    <div class="expense-summary">
+
+        <h2>
+            {{ expense.description }}
+        </h2>
+
+        <div class="summary-details">
+
+            <div class="summary-item">
+
+                <span>
+                    Total Amount
+                </span>
+
+                <strong>
+                    ₹{{ expense.amount }}
+                </strong>
+
+            </div>
+
+            <div class="summary-item">
+
+                <span>
+                    Date
+                </span>
+
+                <strong>
+                    {{ expense.date }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="split-card">
+
+        <div class="split-card-header">
+
+            <h3>
+                Individual Amounts
+            </h3>
+
+        </div>
+
+        {% if splits %}
+
+            <div class="split-list">
+
+                {% for split in splits %}
+
+                    <div class="split-row">
+
+                        <div class="user-info">
+
+                            <div class="user-icon">
+                                {{ split.user.name[0] | upper }}
+                            </div>
+
+                            <div class="user-name">
+                                {{ split.user.name }}
+                            </div>
+
+                        </div>
+
+                        <div class="user-amount">
+                            ₹{{ split.amount }}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                No split details available.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="back-section">
+
+        <a
+            href="{{ url_for(
+                'group_details',
+                group_id=expense.group_id
+            ) }}"
+            class="back-btn"
+        >
+            ← Back to Group
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
