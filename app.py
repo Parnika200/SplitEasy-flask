@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 
 from extensions import db
@@ -12,8 +12,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-llm=ChatOpenAI(
-    model="gpt-4o-mini",
+llm=ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
     temperature=0
 )
 
@@ -569,33 +569,36 @@ def expense_splits(expense_id):
         expense=expense,
         splits=splits
     )
-
 @app.route("/ai-assistant", methods=["GET", "POST"])
 def ai_assistant():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    answer=""
-    question=""
+    answer = ""
+    question = ""
 
-    if request.method=="POST":
-        question=request.form.method("question")
+    if request.method == "POST":
+        question = request.form.get("question")
 
-    if not question:
+        if not question:
             flash("Please enter a question.")
             return redirect(url_for("ai_assistant"))
 
-    expenses=Expense.query.filter_by(user_id=session["user_id"]).all()
+        expenses = Expense.query.filter_by(
+            user_id=session["user_id"]
+        ).all()
 
-    expense_data=[]
-    for expense in expenses:
-         expense_data.append({
+        expense_data = []
+
+        for expense in expenses:
+            expense_data.append({
                 "amount": expense.amount,
                 "description": expense.description,
                 "date": expense.date,
                 "category": expense.category.name
             })
-    prompt = f"""
+
+        prompt = f"""
 You are an expense management assistant.
 
 Answer the user's question using ONLY the expense data provided below.
@@ -612,16 +615,14 @@ Rules:
 - Give a clear and simple answer.
 """
 
-    res=llm.invoke(prompt)
-    answer=res.content()
+        res = llm.invoke(prompt)
+        answer = res.content
 
     return render_template(
         "ai_assistant.html",
         answer=answer,
         question=question
     )
-
-        
 
 
 
