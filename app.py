@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
+import json
 
 from extensions import db
 from models import User, Expense, Category, Group, GroupMember, ExpenseSplit
@@ -661,28 +662,90 @@ Rules:
         question=question
     )
 
-@app.route("/spending-insights") 
+
+@app.route("/spending-insights", methods=["GET", "POST"])
 def spending_insights():
+
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    expenses=Expense.query.filter_by(user_id=session["user_id"]).all()
-    if not expenses:
-        return render_template( "spending_insights.html", insights="You don't have any expenses yet." )
-    total_spending = sum( expense.amount for expense in expenses )
-    category_spending = {}
-    for expense in expenses: 
-        category = expense.category.name 
-        category_spending[category] = ( 
-            category_spending.get(category, 0) + expense.amount )
+    insights = ""
 
-    expense_count = len(expenses)
-    average_expense = total_spending / expense_count
+    if request.method == "POST":
 
-    prompt = f""" You are a personal expense analysis assistant. Analyze the user's spending data below. Total spending: ₹{total_spending:.2f} Number of expenses: {expense_count} Average expense: ₹{average_expense:.2f} Spending by category: {category_spending} Give a short and useful spending analysis. Include: 1. Highest spending category 2. Important spending pattern 3. One practical suggestion to reduce spending 4. A short overall summary Rules: - Use only the data provided. - Do not invent numbers. - Keep the answer simple and easy to understand. """
-    response = llm.invoke(prompt)
-    insights = response.content
-    return render_template( "spending_insights.html", insights=insights )
+        # Get user's expenses
+        expenses = Expense.query.filter_by(
+            user_id=session["user_id"]
+        ).all()
+
+        # If no expenses
+        if not expenses:
+            insights = "You don't have any expenses yet."
+
+        else:
+            # Calculate total spending
+            total_spending = sum(
+                expense.amount for expense in expenses
+            )
+
+            # Calculate spending by category
+            category_spending = {}
+
+            for expense in expenses:
+
+                category = expense.category.name
+
+                category_spending[category] = (
+                    category_spending.get(category, 0)
+                    + expense.amount
+                )
+
+            # Number of expenses
+            expense_count = len(expenses)
+
+            # Average expense
+            average_expense = total_spending / expense_count
+
+            
+            prompt = f"""
+Analyze the user's spending data.
+
+Total spending: ₹{total_spending:.2f}
+Number of expenses: {expense_count}
+Average expense: ₹{average_expense:.2f}
+Spending by category: {category_spending}
+
+Return ONLY valid JSON in exactly this format:
+
+{{
+    "highest_category": "Shopping",
+    "highest_amount": 3000,
+    "pattern": "60% of spending is on Shopping.",
+    "suggestion": "Consider reducing unnecessary shopping expenses.",
+    "summary": "You spent ₹5000 across 3 expenses."
+}}
+
+Rules:
+- Use only the provided data.
+- Do not invent numbers.
+- Keep each value short and simple.
+- Do not use markdown.
+- Return only JSON.
+"""
+
+
+
+   
+
+        response = llm.invoke(prompt)
+
+        insights = json.loads(response.content)
+
+    return render_template(
+        "spending_insights.html",
+        insights=insights
+    )
+
 
 if __name__ == "__main__":
     with app.app_context():

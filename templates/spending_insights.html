@@ -3,31 +3,185 @@
 
 {% block content %}
 
-<h2>📊 AI Spending Insights</h2>
+<style>
 
-<p>
-    Get an AI-powered analysis of your spending habits.
-</p>
+    .insights-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+    }
 
-<form method="GET">
+    .insights-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-    <button type="submit">
-        Generate Spending Insights
-    </button>
+    .insights-header h2 {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
 
-</form>
+    .insights-header p {
+        color: #777;
+    }
 
-{% if insights %}
+    .generate-box {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-    <hr>
+    .generate-box button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        background: #2563eb;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+    }
 
-    <h3>🤖 Your Spending Analysis</h3>
+    .generate-box button:hover {
+        background: #1d4ed8;
+    }
 
-    <div>
-        {{ insights }}
+    .insights-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .insight-card {
+        background: white;
+        padding: 24px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .insight-card h3 {
+        margin-top: 0;
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .insight-card p {
+        margin: 0;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    .amount {
+        font-size: 26px;
+        font-weight: bold;
+        margin-top: 8px;
+    }
+
+    .suggestion {
+        grid-column: span 2;
+    }
+
+    @media (max-width: 700px) {
+
+        .insights-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .suggestion {
+            grid-column: span 1;
+        }
+
+    }
+
+</style>
+
+
+<div class="insights-container">
+
+    <div class="insights-header">
+
+        <h2>📊 AI Spending Insights</h2>
+
+        <p>
+            Understand your spending habits with AI-powered analysis.
+        </p>
+
     </div>
 
-{% endif %}
+
+    <div class="generate-box">
+
+        <form method="POST">
+
+            <button type="submit">
+                ✨ Generate Insights
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if insights %}
+
+    <div class="insights-grid">
+
+        <!-- Highest Spending -->
+
+        <div class="insight-card">
+
+            <h3>🏆 Highest Spending</h3>
+
+            <p>{{ insights.highest_category }}</p>
+
+            <div class="amount">
+                ₹{{ insights.highest_amount }}
+            </div>
+
+        </div>
+
+
+        <!-- Spending Pattern -->
+
+        <div class="insight-card">
+
+            <h3>📈 Spending Pattern</h3>
+
+            <p>
+                {{ insights.pattern }}
+            </p>
+
+        </div>
+
+
+        <!-- Summary -->
+
+        <div class="insight-card">
+
+            <h3>💰 Overall Summary</h3>
+
+            <p>
+                {{ insights.summary }}
+            </p>
+
+        </div>
+
+
+        <!-- Suggestion -->
+
+        <div class="insight-card suggestion">
+
+            <h3>💡 AI Suggestion</h3>
+
+            <p>
+                {{ insights.suggestion }}
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
 ```
