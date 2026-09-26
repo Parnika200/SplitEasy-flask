@@ -569,8 +569,11 @@ def expense_splits(expense_id):
         expense=expense,
         splits=splits
     )
+
+
 @app.route("/ai-assistant", methods=["GET", "POST"])
 def ai_assistant():
+
     if "user_id" not in session:
         return redirect(url_for("login"))
 
@@ -578,12 +581,14 @@ def ai_assistant():
     question = ""
 
     if request.method == "POST":
+
         question = request.form.get("question")
 
         if not question:
             flash("Please enter a question.")
             return redirect(url_for("ai_assistant"))
 
+        
         expenses = Expense.query.filter_by(
             user_id=session["user_id"]
         ).all()
@@ -598,24 +603,56 @@ def ai_assistant():
                 "category": expense.category.name
             })
 
+        
+        group_memberships = GroupMember.query.filter_by(
+            user_id=session["user_id"]
+        ).all()
+
+        group_data = []
+
+        for membership in group_memberships:
+
+            group = membership.group
+
+            group_expenses = Expense.query.filter_by(
+                group_id=group.id
+            ).all()
+
+            group_data.append({
+                "group_name": group.name,
+                "expense_count": len(group_expenses),
+                "total_expense": sum(
+                    expense.amount
+                    for expense in group_expenses
+                )
+            })
+
+       
         prompt = f"""
 You are an expense management assistant.
 
-Answer the user's question using ONLY the expense data provided below.
+Answer the user's question using ONLY the expense and group data provided below.
 
-Expense data:
+PERSONAL EXPENSE DATA:
 {expense_data}
+
+GROUP DATA:
+{group_data}
 
 User question:
 {question}
 
 Rules:
-- Do not invent expenses or amounts.
+- Use only the data provided above.
+- Do not invent expenses, groups, amounts, or numbers.
+- You may calculate totals, counts, and comparisons from the provided data.
 - If the information is not available, say that you don't have enough data.
 - Give a clear and simple answer.
 """
 
+       
         res = llm.invoke(prompt)
+
         answer = res.content
 
     return render_template(
@@ -623,7 +660,6 @@ Rules:
         answer=answer,
         question=question
     )
-
 
 
 if __name__ == "__main__":

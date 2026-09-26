@@ -1,35 +1,258 @@
+
 {% extends "base.html" %}
 
 {% block content %}
 
-<h2>AI Expense Assistant 🤖</h2>
+<style>
 
-<p>Ask questions about your expenses.</p>
+    .ai-page {
+        max-width: 900px;
+        margin: 0 auto;
+    }
 
-<form method="POST">
 
-    <input
-        type="text"
-        name="question"
-        placeholder="Ask something about your expenses..."
-        value="{{ question }}"
-        style="width: 400px;"
-    >
+    
+    .ai-header {
+        margin-bottom: 25px;
+    }
 
-    <button type="submit">
-        Ask AI
-    </button>
+    .ai-header h2 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        color: #111827;
+    }
 
-</form>
+    .ai-header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 15px;
+    }
 
-{% if answer %}
 
-    <hr>
+   
+    .ai-card {
+        background: white;
 
-    <h3>AI Response</h3>
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
 
-    <p>{{ answer }}</p>
+        padding: 30px;
 
-{% endif %}
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+
+       .ai-form {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .ai-input {
+        flex: 1;
+
+        height: 46px;
+
+        padding: 0 15px;
+
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+
+        font-size: 14px;
+
+        color: #111827;
+
+        outline: none;
+
+        transition: 0.2s;
+    }
+
+    .ai-input::placeholder {
+        color: #9ca3af;
+    }
+
+    .ai-input:focus {
+        border-color: #4f46e5;
+
+        box-shadow:
+            0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+
+   
+    .ai-button {
+        height: 46px;
+
+        padding: 0 22px;
+
+        border: none;
+        border-radius: 8px;
+
+        background: #4f46e5;
+
+        color: white;
+
+        font-size: 14px;
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition: 0.2s;
+    }
+
+    .ai-button:hover {
+        background: #4338ca;
+    }
+
+
+    .ai-response {
+        margin-top: 25px;
+
+        padding-top: 25px;
+
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .ai-response-title {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        margin-bottom: 12px;
+    }
+
+    .ai-response-title h3 {
+        margin: 0;
+
+        font-size: 17px;
+
+        color: #111827;
+    }
+
+
+    .ai-answer {
+        background: #f5f3ff;
+
+        border: 1px solid #ddd6fe;
+
+        border-radius: 10px;
+
+        padding: 18px;
+
+        color: #374151;
+
+        font-size: 14px;
+
+        line-height: 1.7;
+
+        white-space: pre-wrap;
+    }
+
+
+     @media (max-width: 600px) {
+
+        .ai-card {
+            padding: 20px;
+        }
+
+        .ai-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .ai-input {
+            width: 100%;
+        }
+
+        .ai-button {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<div class="ai-page">
+
+
+    <!-- HEADER -->
+
+    <div class="ai-header">
+
+        <h2>
+            AI Expense Assistant 🤖
+        </h2>
+
+        <p>
+            Ask questions and get insights about your expenses.
+        </p>
+
+    </div>
+
+
+    <!-- MAIN CARD -->
+
+    <div class="ai-card">
+
+
+        <form
+            method="POST"
+            class="ai-form"
+        >
+
+            <input
+                type="text"
+                name="question"
+                class="ai-input"
+                placeholder="Ask something about your expenses..."
+                value="{{ question }}"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="ai-button"
+            >
+                Ask AI
+            </button>
+
+        </form>
+
+
+        {% if answer %}
+
+            <div class="ai-response">
+
+                <div class="ai-response-title">
+
+                    <span>🤖</span>
+
+                    <h3>
+                        AI Response
+                    </h3>
+
+                </div>
+
+
+                <div class="ai-answer">
+
+                    {{ answer }}
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
 
 {% endblock %}
+```
