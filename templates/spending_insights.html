@@ -1,0 +1,33 @@
+```html
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>📊 AI Spending Insights</h2>
+
+<p>
+    Get an AI-powered analysis of your spending habits.
+</p>
+
+<form method="GET">
+
+    <button type="submit">
+        Generate Spending Insights
+    </button>
+
+</form>
+
+{% if insights %}
+
+    <hr>
+
+    <h3>🤖 Your Spending Analysis</h3>
+
+    <div>
+        {{ insights }}
+    </div>
+
+{% endif %}
+
+{% endblock %}
+```
