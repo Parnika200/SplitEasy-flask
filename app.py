@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAi
+from langchain_openai import ChatOpenAI
 import os
 
 from extensions import db
@@ -12,7 +12,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-llm=ChatOpenAi(
+llm=ChatOpenAI(
     model="gpt-4o-mini",
     temperature=0
 )
